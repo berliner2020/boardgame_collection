@@ -1,3 +1,5 @@
+# TODO: README documentation and requirements
+
 # Movie database
 # Title, Director, Year, Genre
 # =============================
@@ -12,19 +14,24 @@ movies = [
 # App UI
 # =============================
 def menu():
+    print("======================================================================================================")
     print("Welcome to Jeremy's Movie Database")
     print("View all movies (v), Add a new movie (a), Search for movie by title (s), Quit app (q)")
+    print("======================================================================================================")
+    print()
     ui = input("What would you like to do? ")
 
     user_options = {
         "v": list_all,
         "a": add_movie,
-        "s": search_movies,
-        "q": quit()
+        "s": search_movies
     }
 
     if ui in user_options:
-        print('yes')
+        selected_command = user_options[ui]
+        selected_command()
+    elif ui == 'q':
+        quit()
     else:
         print("unknown command. please try again.")
 
@@ -44,7 +51,8 @@ def list_all():
         rating = movie['rating']
 
         print(title, year, director, genre, rating, sep=" | ")
-        print()
+
+    print()
 
 
 # Add new movies to collection
@@ -55,12 +63,35 @@ def add_movie():
     genre = input("What kind of movie is it? ").lower()
     rating = float(input("What was the movie's IMDB rating? "))
 
-    new_movie = {"title": title, "director": director, "year": year, "genre": genre, "rating": rating}
-    movies.append(new_movie)
+    class Movie:
+        def __init__(self, mtitle, mdirector, myear, mgenre, mrating):
+            self.title = mtitle
+            self.director = mdirector
+            self.year = myear
+            self.genre = mgenre
+            self.rating = mrating
+
+        def __len__(self):
+            return len(self.title)
+
+        def __repr__(self):
+            return self.title
+
+        def __str__(self):
+            return f"Movie object {self.title} with len {len(self)}"
+
+        #@property
+        def mdict(self):
+            return {"title": self.title, "director": self.director, "year": self.year, "genre": self.genre,
+                    "rating": self.rating}
+
+    new_movie = Movie(title, director, year, genre, rating)
+    movies.append(new_movie.mdict())
 
     print(new_movie)
     print()
 
+    # TODO Change to a class
     # TODO Add comprehensive data entry validation
 
 
@@ -82,10 +113,11 @@ def search_movies():
             print("movie not found in database")
             print()
 
+    # TODO search result should only
     # TODO Make search more robust using regex
 
 
-
 if __name__ == "__main__":
-    menu()
+    while True:
+        menu()
 
