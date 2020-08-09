@@ -1,15 +1,19 @@
-# Movie Collection
-Intended for the true movie aficionado, this pure python application let's users keep track of movies they have seen.
+# Board Game Collection
+Intended for the board game aficionado, this pure python application let's users keep track of their board game
+ collection.
 
 ## Setup and Installation
-Features include
+coming soon!
 
 ## Documentation
+coming soon!
+
 ### Library UI
 The following menu options are available:
-- "v" = view all movies in the database
-- "s" = search for the title of a movie
-- "a" = add a movie to the database (title, director, year, genre, IMDB rating)
-## Support
+- "l" = view all board games in the database
+- "a" = add a game to the database
+- "s" = search for the title of a game in your collection
+- "p" = toggle the played status of a game in your collection (True/False)
+- "d" = delete a game from the database
+- "q" = quit the application
 
-## License

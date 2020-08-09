@@ -31,7 +31,7 @@ def menu():
         except KeyError:
             raise
 
-        menu()
+        ui = input("What would you like to do? ")
         # raise(f"User entered '{ui}'. This is not a menu option. Please enter v, a, or s.")
     # except TypeError:
     #     raise(f"User entered '{ui}'. This command does not have a value.")
@@ -42,11 +42,11 @@ def menu():
     # TODO Try and add raise exceptions based on user input type
 
 
-# =============================
 # List all movies in collection
-# =============================
 def list_all():
-    for game in database.games:
+    games = database.db_read()
+
+    for game in games:
         # variables
         title = game["title"]
         year = game['year']
@@ -71,89 +71,30 @@ def add_game():
     rating = float(input("What was the game's rating? ").strip())
     played = False
 
-    class Game:
-        def __init__(self, mtitle, myear, mdesigner, mtime, mplayers, mrating, mplayed):
-            self.title = mtitle
-            self.year = myear
-            self.designer = mdesigner
-            self.time = mtime
-            self.players = mplayers
-            self.rating = mrating
-            self.played = mplayed
-
-        def __repr__(self):
-            return self.title
-
-        def __str__(self):
-            return f"Game Object for {self.title}."
-
-        def mdict(self):
-            return {"title": self.title, "year": self.year, "designer": self.designer, "time": self.time,
-                    "players": self.players, "rating": self.rating, "played": self.played}
-
-    new_game = Game(title, year, designer, time, players, rating, played)
-
-    try:
-        database.games.append(new_game.mdict())
-    except TypeError:
-        print('This is not the right type of object.')
-        raise
+    new_game = database.db_add_game(title, year, designer, time, players, rating, played=False)
 
     print(new_game)
     print()
 
-    # TODO Change to a class
-    # TODO Add comprehensive data entry validation
+    # TODO Add comprehensive data entry validation and cleaning
     # TODO Use error handling in code
 
 
 # Find a movie by title
 def search_games():
     q = input("What game are you looking for? ")
-
-    for i in range(len(database.games)):
-        if database.games[i]['title'] == q:
-            print(database.games[i])
-
-
-        # if q == game['title']:
-        #     # variables
-        #     title = game["title"]
-        #     year = game['year']
-        #     designer = game["designer"]
-        #     time = game['time']
-        #     players = game['players']
-        #     rating = game['rating']
-        #
-        #     print(title, year, designer, time, players, rating, sep=" | ")
-        #     print()
-        # else:
-        #     print("movie not found in database")
-        #     print()
-
-    # TODO search result should only
-    # TODO Make search more robust using regex
+    search_result = database.db_search_games(q)
+    print(search_result)
 
 
 def mark_played():
     q = input("What game have you played? ")
-
-    for game in database.games:
-        if q == game['title']:
-            print(game)
-            if not game['played']:
-                game['played'] = True
-            else:
-                game['played'] = False
-            print(game)
+    database.db_mark_game_played(q)
 
 
 def delete_game():
     q = input("What game do you want to delete? ")
-
-    for i in range(len(database.games)):
-        if database.games[i]['title'] == q:
-            del database.games[i]
+    database.db_delete_game(q)
 
 
 if __name__ == "__main__":
