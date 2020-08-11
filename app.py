@@ -7,6 +7,8 @@ import database
 # App UI
 # =============================
 def menu():
+    #database.create_game_table()
+
     print("======================================================================================================")
     print("Welcome to Jeremy's Board Game Database")
     print('''View all games (l), Add a new game (a), Search for a game by title (s), Mark game as played (p), 
@@ -48,15 +50,15 @@ def list_all():
 
     for game in games:
         # variables
-        title = game["title"]
-        year = game['year']
-        designer = game["designer"]
-        time = game['time']
-        players = game['players']
-        rating = game['rating']
-        played = game['played']
-
+        title = game[1]
+        year = game[2]
+        designer = game[3]
+        time = game[4]
+        players = game[5]
+        rating = game[6]
+        played = game[7]
         print(title, year, designer, time, players, rating, played, sep=" | ")
+
 
     print()
 
