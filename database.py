@@ -1,45 +1,35 @@
 import json
 import mysql.connector
 
-# Get credentials from
+# Get connection string from local
 with open("connectionstring.json") as file:
     contents = json.load(file)
 
+# DB Connection
+mydb = mysql.connector.connect(
+    host=contents['host'],
+    port=contents['port'],
+    user=contents['user'],
+    password=contents['password'],
+    database=contents['database'],
+)
+
 
 def create_game_table():
-    mydb = mysql.connector.connect(
-        host=contents['host'],
-        port=contents['port'],
-        user=contents['user'],
-        password=contents['password'],
-        database=contents['database'],
-    )
-
+    mydb
     mycursor = mydb.cursor()
-    mycursor.execute('''CREATE TABLE games(id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), year SMALLINT(4),
+    mycursor.execute('''CREATE TABLE IF NOT EXISTS games(id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255), 
+    year SMALLINT(4),
     designer VARCHAR(255), time SMALLINT(3), players SMALLINT(2), rating FLOAT(3), played BOOLEAN)''')
-
     mydb.commit()
-    mydb.close()
 
 
 def db_read():
-    mydb = mysql.connector.connect(
-        host=contents['host'],
-        port=contents['port'],
-        user=contents['user'],
-        password=contents['password'],
-        database=contents['database'],
-    )
-
+    mydb
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM games")
-    myresult = mycursor.fetchall()
-
-    return myresult
-
-    mydb.commit()
-    mydb.close()
+    games = mycursor.fetchall()
+    return games
 
 
 def db_add_game(title, year, designer, time, players, rating, played):
@@ -66,14 +56,7 @@ def db_add_game(title, year, designer, time, players, rating, played):
     new_game = Game(title, year, designer, time, players, rating, played)
 
     try:
-        mydb = mysql.connector.connect(
-            host=contents['host'],
-            port=contents['port'],
-            user=contents['user'],
-            password=contents['password'],
-            database=contents['database'],
-        )
-
+        mydb
         mycursor = mydb.cursor()
         sql = "INSERT INTO games (title, year, designer, time, players, rating, played) VALUES (%s, %s, %s, %s, %s, " \
               "%s, %s)"
@@ -93,28 +76,31 @@ def db_add_game(title, year, designer, time, players, rating, played):
         raise
 
 
-
 def db_mark_game_played(name):
-    for game in games:
-        if name == game['title']:
-            print(game)
-            if not game['played']:
-                game['played'] = True
-            else:
-                game['played'] = False
-            print(game)
+    mydb
+    mycursor = mydb.cursor()
+    mycursor.execute("UPDATE games SET played = 1 WHERE title = %s", (name,))
+    mydb.commit()
 
 
 def db_delete_game(name):
-    for i in range(len(games)):
-        if games[i]['title'] == name:
-            del games[i]
+    print(name)
+    mycursor = mydb.cursor()
+    mycursor.execute("DELETE FROM games WHERE title = %s", (name,))
+    mydb.commit()
 
 
 def db_search_games(name):
-    for i in range(len(games)):
-        if games[i]['title'] == name:
-            return games[i]
+    print(name)
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM games WHERE title = %s", (name,))
+    myresult = mycursor.fetchall()
+    return myresult
 
-            # TODO Make search more robust using regex
-            # TODO return printed display of output
+
+    # for i in range(len(games)):
+    #     if games[i]['title'] == name:
+    #         return games[i]
+
+    # TODO Make search more robust using regex
+    # TODO return printed display of output

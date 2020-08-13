@@ -59,7 +59,6 @@ def list_all():
         played = game[7]
         print(title, year, designer, time, players, rating, played, sep=" | ")
 
-
     print()
 
 
