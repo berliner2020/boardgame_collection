@@ -1,4 +1,4 @@
-import database
+import utils.database
 
 # TODO: README documentation and requirements
 
@@ -24,7 +24,8 @@ def menu():
             "a": add_game,
             "s": search_games,
             "p": mark_played,
-            "d": delete_game
+            "d": delete_game,
+            "c": create_table
         }
 
         try:
@@ -46,7 +47,7 @@ def menu():
 
 # List all movies in collection
 def list_all():
-    games = database.db_read()
+    games = utils.database.db_read()
 
     for game in games:
         # variables
@@ -72,7 +73,7 @@ def add_game():
     rating = float(input("What was the game's rating? ").strip())
     played = False
 
-    new_game = database.db_add_game(title, year, designer, time, players, rating, played=False)
+    new_game = utils.database.db_add_game(title, year, designer, time, players, rating, played=False)
 
     print(new_game)
     print()
@@ -84,20 +85,34 @@ def add_game():
 # Find a movie by title
 def search_games():
     q = input("What game are you looking for? ")
-    search_result = database.db_search_games(q)
-    print(search_result)
+    game = utils.database.db_search_games(q)
+
+    # variables
+    title = game[1]
+    year = game[2]
+    designer = game[3]
+    time = game[4]
+    players = game[5]
+    rating = game[6]
+    played = game[7]
+
+    print(title, year, designer, time, players, rating, played, sep=" | ")
 
 
 def mark_played():
     q = input("What game have you played? ")
-    database.db_mark_game_played(q)
+    utils.database.db_mark_game_played(q)
 
 
 def delete_game():
     q = input("What game do you want to delete? ")
-    database.db_delete_game(q)
+    utils.database.db_delete_game(q)
+
+
+def create_table():
+    utils.database.create_game_table()
 
 
 if __name__ == "__main__":
     menu()
-
+    utils.database.mydb.close()
